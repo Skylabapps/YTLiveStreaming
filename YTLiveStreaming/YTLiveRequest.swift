@@ -127,7 +127,7 @@ extension YTLiveRequest {
             //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\"}}"
            
             // For Ultra Low Latency
-            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": { \"enableDvr\": false, \"enableLowLatency\": false,\"latencyPreference\": \"ultraLow\",\"closedCaptionsType\": \"closedCaptionsDisabled\",\"stereoLayout\": \"mono\",\"projection\": \"rectangular\" }}"
+            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\": \"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\"}}"
             
             let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
             let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)"
@@ -195,7 +195,7 @@ extension YTLiveRequest {
             
             if accessToken.isEmpty == false {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-                let jsonBody = "{\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},\"contentDetails\": {\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),\"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}"
+                let jsonBody = "{\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},\"contentDetails\":{\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),\"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 Alamofire.request("\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)",
                     method: .put,
@@ -416,7 +416,7 @@ extension YTLiveRequest {
                 let frameRate = LiveAPI.FrameRate
                 let ingestionType = LiveAPI.IngestionType
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
-                let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"description\": \"\(description)\"},\"cdn\": {\"resolution\":\"\(resolution)\",\"frameRate\":\"\(frameRate)\",\"ingestionType\":\"\(ingestionType)\",\"ingestionInfo\":{\"streamName\":\"\(streamName)\"}}}"
+                let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"description\":\"\(description)\"},\"cdn\":{\"resolution\":\"\(resolution)\",\"frameRate\":\"\(frameRate)\",\"ingestionType\":\"\(ingestionType)\",\"ingestionInfo\":{\"streamName\":\"\(streamName)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 let url = "\(LiveAPI.BaseURL)/liveStreams?part=id,snippet,cdn,status&key=\(Credentials.APIkey)"
                 Alamofire.request(url,
@@ -499,7 +499,7 @@ extension YTLiveRequest {
         GoogleOAuth2.sharedInstance.requestToken() { token in
             if let token = token {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
-                let jsonBody = "{\"id\":\"\(liveStreamId)\",\"snippet\": {\"title\":\"\(title)\"},\"cdn\":{\"format\":\"\(format)\",\"ingestionType\":\"\(ingestionType)\"}}}"
+                let jsonBody = "{\"id\":\"\(liveStreamId)\",\"snippet\":{\"title\":\"\(title)\"},\"cdn\":{\"format\":\"\(format)\",\"ingestionType\":\"\(ingestionType)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 Alamofire.request("\(LiveAPI.BaseURL)/liveStreams",
                     method: .put,
