@@ -40,7 +40,7 @@ extension YTLiveRequest {
             "part": "id,snippet,contentDetails,status" as AnyObject,
             "broadcastStatus": status.rawValue as AnyObject,
             "maxResults": LiveRequest.MaxResultObjects as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.listBroadcasts(parameters), completion: { result in
             switch result {
@@ -80,7 +80,7 @@ extension YTLiveRequest {
         let parameters: [String: AnyObject] = [
             "part":"id,snippet,contentDetails,status" as AnyObject,
             "id":broadcastId as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.liveBroadcast(parameters)) { result in
             switch result {
@@ -124,9 +124,13 @@ extension YTLiveRequest {
     class func createLiveBroadcast(_ title: String,broadCasteType:String, startDateTime: Date, completion: @escaping (Error?,LiveBroadcastStreamModel?) -> Void) {
         if let accessToken =   GoogleOAuth2.sharedInstance.accessToken {
             let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-            let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"}}"
+            //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\"}}"
+           
+            // For Ultra Low Latency
+            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": { \"enableDvr\": false, \"enableLowLatency\": false,\"latencyPreference\": \"ultraLow\",\"closedCaptionsType\": \"closedCaptionsDisabled\",\"stereoLayout\": \"mono\",\"projection\": \"rectangular\" }}"
+            
             let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-            let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(LSCredentials.APIkey)"
+            let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)"
             Alamofire.request(url,
                               method: .post,
                               parameters: [:],
@@ -189,9 +193,13 @@ extension YTLiveRequest {
             
             if accessToken.isEmpty == false {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-                let jsonBody = "{\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},\"contentDetails\": {\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),\"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}"
+                let jsonBody = """
+                            {\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},
+                            \"contentDetails\": {\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),
+                            \"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}
+                           """
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                Alamofire.request("\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(LSCredentials.APIkey)",
+                Alamofire.request("\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)",
                     method: .put,
                     parameters: [:],
                     encoding: encoder,
@@ -238,7 +246,7 @@ extension YTLiveRequest {
             "id":boadcastId as AnyObject,
             "broadcastStatus":broadcastStatus as AnyObject,
             "part":"id,snippet,contentDetails,status" as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.transitionLiveBroadcast(parameters)) { result in
             switch result {
@@ -271,7 +279,7 @@ extension YTLiveRequest {
     class func deleteLiveBroadcast(broadcastId: String, completion: @escaping (Bool) -> Void) {
         let parameters: [String: AnyObject] = [
             "id":broadcastId as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.deleteLiveBroadcast(parameters)) { result in
             switch result {
@@ -304,7 +312,7 @@ extension YTLiveRequest {
             "id":broadcastId as AnyObject,
             "streamId":streamId as AnyObject,
             "part":"id,snippet,contentDetails,status" as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.bindLiveBroadcast(parameters)) { result in
             switch result {
@@ -346,7 +354,7 @@ extension YTLiveRequest {
         let parameters: [String: AnyObject] = [
             "part":"id,snippet,cdn,status" as AnyObject,
             "id":liveStreamId as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.liveStream(parameters)) { result in
             switch result {
@@ -412,7 +420,7 @@ extension YTLiveRequest {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
                 let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"description\": \"\(description)\"},\"cdn\": {\"resolution\":\"\(resolution)\",\"frameRate\":\"\(frameRate)\",\"ingestionType\":\"\(ingestionType)\",\"ingestionInfo\":{\"streamName\":\"\(streamName)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                let url = "\(LiveAPI.BaseURL)/liveStreams?part=id,snippet,cdn,status&key=\(LSCredentials.APIkey)"
+                let url = "\(LiveAPI.BaseURL)/liveStreams?part=id,snippet,cdn,status&key=\(Credentials.APIkey)"
                 Alamofire.request(url,
                                   method: .post,
                                   parameters: [:],
@@ -456,8 +464,8 @@ extension YTLiveRequest {
     // DELETE https://www.googleapis.com/youtube/v3/liveStreams
     class func deleteLiveStream(_ liveStreamId: String, completion: @escaping (Bool) -> Void) {
         let parameters: [String: AnyObject] = [
-            "id":liveStreamId as AnyObject,
-            "key": LSCredentials.APIkey as AnyObject
+            "id": liveStreamId as AnyObject,
+            "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.deleteLiveStream(parameters)) { result in
             switch result {
@@ -490,14 +498,14 @@ extension YTLiveRequest {
     // ingestionType = dash rtmp
     
     class func updateLiveStream(_ liveStreamId: String, title: String, format: String, ingestionType: String, completion: @escaping (Bool) -> Void) {
-        GoogleOAuth2.sharedInstance.requestToken() { token in
+        GoogleOAuth2.sharedInstance.requestToken { token in
             if let token = token {
-                let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
+                let headers = merge(one: ["Content-Type": "application/json"], ["Authorization": "Bearer \(token)"])
                 let jsonBody = "{\"id\":\"\(liveStreamId)\",\"snippet\": {\"title\":\"\(title)\"},\"cdn\":{\"format\":\"\(format)\",\"ingestionType\":\"\(ingestionType)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 Alamofire.request("\(LiveAPI.BaseURL)/liveStreams",
                     method: .put,
-                    parameters: ["part": "id,snippet,cdn,status", "key": LSCredentials.APIkey],
+                    parameters: ["part": "id,snippet,cdn,status", "key": Credentials.APIkey],
                     encoding: encoder,
                     headers: headers)
                     .validate()

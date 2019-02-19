@@ -19,7 +19,7 @@ public struct Auth {
 
 public struct LiveAPI {
     static let BaseURL       = "https://www.googleapis.com/youtube/v3"
-    static let Resolution    = "1440p"    // 2160p 1080p 1440p 240p 360p 480p 720p
+    static let Resolution    = "720p"    // 2160p 1080p 1440p 240p 360p 480p 720p
     static let FrameRate     = "60fps"    // 30fps
     static let IngestionType = "rtmp" // dash rtmp
 }

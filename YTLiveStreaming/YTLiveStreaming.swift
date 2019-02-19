@@ -171,10 +171,10 @@ extension YTLiveStreaming {
         }
     }
     
-    public func completeBroadcast(_ broadcast: LiveBroadcastStreamModel, completion: @escaping (Bool) -> Void) {
+    public func completeBroadcast(_ broadcast: String, completion: @escaping (Bool) -> Void) {
         LiveLauncher.sharedInstance.stopBroadcast()
         // complete – The broadcast is over. YouTube stops transmitting video.
-        YTLiveRequest.transitionLiveBroadcast(broadcast.id, broadcastStatus: "complete", completion: { liveBroadcast in
+        YTLiveRequest.transitionLiveBroadcast(broadcast, broadcastStatus: "complete", completion: { liveBroadcast in
             if let _ = liveBroadcast {
                 completion(true)
             } else {
