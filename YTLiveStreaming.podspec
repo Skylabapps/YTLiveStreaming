@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.platform     = :ios
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '11.0'
   s.name         = "YTLiveStreaming"
   s.description  = <<-DESC
      YTLiveStreaming is a framework which lets create live broadcasts and video streams on YouTube using the YouTube Live Streaming API.

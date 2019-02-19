@@ -131,6 +131,8 @@ extension YTLiveRequest {
             
             let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
             let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)"
+            
+            // public
             Alamofire.request(url,
                               method: .post,
                               parameters: [:],
@@ -193,11 +195,7 @@ extension YTLiveRequest {
             
             if accessToken.isEmpty == false {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-                let jsonBody = """
-                            {\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},
-                            \"contentDetails\": {\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),
-                            \"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}
-                           """
+                let jsonBody = "{\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},\"contentDetails\": {\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),\"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 Alamofire.request("\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Credentials.APIkey)",
                     method: .put,
@@ -464,7 +462,7 @@ extension YTLiveRequest {
     // DELETE https://www.googleapis.com/youtube/v3/liveStreams
     class func deleteLiveStream(_ liveStreamId: String, completion: @escaping (Bool) -> Void) {
         let parameters: [String: AnyObject] = [
-            "id": liveStreamId as AnyObject,
+            "id":liveStreamId as AnyObject,
             "key": Credentials.APIkey as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.deleteLiveStream(parameters)) { result in
@@ -498,9 +496,9 @@ extension YTLiveRequest {
     // ingestionType = dash rtmp
     
     class func updateLiveStream(_ liveStreamId: String, title: String, format: String, ingestionType: String, completion: @escaping (Bool) -> Void) {
-        GoogleOAuth2.sharedInstance.requestToken { token in
+        GoogleOAuth2.sharedInstance.requestToken() { token in
             if let token = token {
-                let headers = merge(one: ["Content-Type": "application/json"], ["Authorization": "Bearer \(token)"])
+                let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
                 let jsonBody = "{\"id\":\"\(liveStreamId)\",\"snippet\": {\"title\":\"\(title)\"},\"cdn\":{\"format\":\"\(format)\",\"ingestionType\":\"\(ingestionType)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
                 Alamofire.request("\(LiveAPI.BaseURL)/liveStreams",
