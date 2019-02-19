@@ -26,27 +26,27 @@ import SwiftyJSON
 // }
 
 public struct LiveBroadcastErrorModel {
-
-   public struct Item {
-      public let domain: String
-      public let reason: String
-      public let locationType: String
-      public let location: String
-      public let message: String
-   }
-
-   public let code: Int?
-   public let message: String?
+    
+    public struct Item {
+        public let domain: String
+        public let reason: String
+        public let locationType: String
+        public let location: String
+        public let message: String
+    }
+    
+    public let code: Int?
+    public let message: String?
 }
 
 // MARK: - Decodable
 
 extension LiveBroadcastErrorModel: Decodable {
-   public static func decode(_ json: JSON) -> LiveBroadcastErrorModel {
-      let model = LiveBroadcastErrorModel(
-         code: json["code"].intValue,
-         message: json["message"].stringValue
-      )
-      return model
-   }
+    public static func decode(_ json: JSON) -> LiveBroadcastErrorModel {
+        let model = LiveBroadcastErrorModel(
+            code: json["code"].intValue,
+            message: json["message"].stringValue
+        )
+        return model
+    }
 }
