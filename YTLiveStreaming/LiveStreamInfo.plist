@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PrivacyStatus</key>
+	<dict>
+		<key>PrivacyStatusPublic</key>
+		<string>public</string>
+		<key>PrivacyStatusUnlisted</key>
+		<string>unlisted</string>
+	</dict>
+	<key>LiveRequest</key>
+	<dict>
+		<key>MaxResultObjects</key>
+		<string>50</string>
+	</dict>
+	<key>LiveAPI</key>
+	<dict>
+		<key>BaseURL</key>
+		<string>https://www.googleapis.com/youtube/v3</string>
+		<key>Resolution</key>
+		<string>720p</string>
+		<key>FrameRate</key>
+		<string>60fps</string>
+		<key>IngestionType</key>
+		<string>rtmp</string>
+	</dict>
+	<key>Auth</key>
+	<dict>
+		<key>ClientSecret</key>
+		<string> </string>
+		<key>AuthorizeURL</key>
+		<string>https://accounts.google.com/o/oauth2/auth</string>
+		<key>TokenURL</key>
+		<string>https://www.googleapis.com/oauth2/v3/token</string>
+		<key>RedirectURL</key>
+		<string>http://localhost</string>
+	</dict>
+	<key>APIKEY</key>
+	<string>AIzaSyCihFS-4d4fP9pKQG3sP1-BUHblLN07chE</string>
+</dict>
+</plist>

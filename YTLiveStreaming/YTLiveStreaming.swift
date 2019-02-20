@@ -299,25 +299,3 @@ extension YTLiveStreaming {
     }
 }
 
-// MARK Tests
-
-extension YTLiveStreaming {
-    
-    func testUpdateLiveStream() {
-        let liveStreamId = "0"
-        let title = "Live Stream"
-        let format = "1080p"    // 1080p 1440p 240p 360p 480p 720p
-        let ingestionType = "rtmp" // dash rtmp
-        YTLiveRequest.updateLiveStream(liveStreamId, title: title, format: format, ingestionType: ingestionType, completion: { success in
-            
-            if success {
-                print("All right")
-            } else {
-                print("Something went wrong")
-            }
-            
-        })
-    }
-    
-}
-

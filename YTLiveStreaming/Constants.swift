@@ -11,27 +11,27 @@ import Foundation
 import UIKit
 
 public struct Auth {
-    static let ClientSecret = ""
-    static let AuthorizeURL = "https://accounts.google.com/o/oauth2/auth"
-    static let TokenURL     = "https://www.googleapis.com/oauth2/v3/token"
-    static let RedirectURL  = "http://localhost"
+    static let ClientSecret: String = Credentials.authDictionary != nil ? Credentials.authDictionary!["ClientSecret"] as! String : ""
+    static let AuthorizeURL: String = Credentials.authDictionary != nil ? Credentials.authDictionary!["AuthorizeURL"] as! String : "https://accounts.google.com/o/oauth2/auth"
+    static let TokenURL: String     = Credentials.authDictionary != nil ? Credentials.authDictionary!["TokenURL"] as! String : "https://www.googleapis.com/oauth2/v3/token"
+    static let RedirectURL: String   = Credentials.authDictionary != nil ? Credentials.authDictionary!["RedirectURL"] as! String : "http://localhost"
 }
 
 public struct LiveAPI {
-    static let BaseURL       = "https://www.googleapis.com/youtube/v3"
-    static let Resolution    = "720p"    // 2160p 1080p 1440p 240p 360p 480p 720p
-    static let FrameRate     = "60fps"    // 30fps
-    static let IngestionType = "rtmp" // dash rtmp
+    static let BaseURL: String        = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["BaseURL"] as! String : "https://www.googleapis.com/youtube/v3"
+    static let Resolution: String     = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["Resolution"] as! String : "720p"
+    static let FrameRate: String      = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["FrameRate"] as! String : "60fps"
+    static let IngestionType: String  = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["IngestionType"] as! String : "rtmp" 
 }
 
 public struct LiveRequest {
-    static let MaxResultObjects = 50
+    static let MaxResultObjects:Int = Credentials.liveRequestDictionary != nil ? Int(Credentials.liveRequestDictionary!["MaxResultObjects"] as! String)! : 50
 }
 
 
 public struct privacyStatus {
-    static let privacyStatusPublic   = "public"
-    static let privacyStatusUnlisted = "unlisted"
+    static let PrivacyStatusPublic: String    = Credentials.privacyStatusDictionary != nil ? Credentials.privacyStatusDictionary!["PrivacyStatusPublic"] as! String : "public"
+    static let PrivacyStatusUnlisted: String  = Credentials.privacyStatusDictionary != nil ? Credentials.privacyStatusDictionary!["PrivacyStatusUnlisted"] as! String : "unlisted"
 }
 
 
