@@ -15,12 +15,13 @@ public struct Auth {
     static let AuthorizeURL: String = Credentials.authDictionary != nil ? Credentials.authDictionary!["AuthorizeURL"] as! String : "https://accounts.google.com/o/oauth2/auth"
     static let TokenURL: String     = Credentials.authDictionary != nil ? Credentials.authDictionary!["TokenURL"] as! String : "https://www.googleapis.com/oauth2/v3/token"
     static let RedirectURL: String   = Credentials.authDictionary != nil ? Credentials.authDictionary!["RedirectURL"] as! String : "http://localhost"
+    static var APIkey: String = Credentials.authDictionary != nil ? Credentials.authDictionary!["APIKEY"] as! String : ""
 }
 
 public struct LiveAPI {
     static let BaseURL: String        = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["BaseURL"] as! String : "https://www.googleapis.com/youtube/v3"
-    static let Resolution: String     = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["Resolution"] as! String : "720p"
-    static let FrameRate: String      = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["FrameRate"] as! String : "60fps"
+    static let Resolution: String     = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["Resolution"] as! String : ""
+    static let FrameRate: String      = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["FrameRate"] as! String : ""
     static let IngestionType: String  = Credentials.liveAPIDictionary != nil ? Credentials.liveAPIDictionary!["IngestionType"] as! String : "rtmp" 
 }
 

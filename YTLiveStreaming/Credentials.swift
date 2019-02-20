@@ -9,23 +9,17 @@
 import UIKit
 
 public class Credentials: NSObject {
-    private static var _APIkey: String = Credentials.settingDictionary != nil ? Credentials.settingDictionary![plistKeyAPIkey] as! String : "AIzaSyCihFS-4d4fP9pKQG3sP1-BUHblLN07chE"
-    private static let plistKeyAPIkey = "APIKEY"
-    
     private static var _settingDictionary: NSDictionary?
     
     class var settingDictionary: NSDictionary? {
         if Credentials._settingDictionary == nil {
-            let bundle = Bundle(for: self.classForCoder())
+            //let bundle = Bundle(for: self.classForCoder())
+            let bundle = Bundle(identifier: "org.cocoapods.SkylabCore")!
             if let path = bundle.path(forResource: "LiveStreamInfo", ofType: "plist") {
                 Credentials._settingDictionary = NSDictionary(contentsOfFile: path)
             }
         }
         return Credentials._settingDictionary
-    }
-    
-    class var APIkey: String {
-        return Credentials._APIkey
     }
     
     class var authDictionary: NSDictionary? {
