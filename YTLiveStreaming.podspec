@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
   s.dependency 'Moya', '10.0.0'
   s.dependency 'SwiftyJSON'
 
-  s.source_files = "YTLiveStreaming/**/*.{swift,h,m,plist}"
+  s.source_files = "YTLiveStreaming/**/*.{swift,h,m}"
 
   s.public_header_files = ['YTLiveStreaming/YTLiveStreaming.h']
 
