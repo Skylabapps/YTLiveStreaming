@@ -14,7 +14,7 @@ import Foundation
 
 class LiveLauncher: NSObject {
     
-    let AskStatusStreamFrequencyInSeconds = 3.0
+    var AskStatusStreamFrequencyInSeconds = 3.0
     fileprivate var liveBroadcast: LiveBroadcastStreamModel?
     fileprivate var liveStream: LiveStreamModel?
     fileprivate var _isLiveStreaming: Bool = false
@@ -89,9 +89,19 @@ class LiveLauncher: NSObject {
         guard let liveStream = self.liveStream else {
             return
         }
+        
         self.youTubeWorker?.getStatusBroadcast(liveBroadcast, stream: liveStream, completion: { (broadcastStatus, streamStatus, healthStatus) in
             if let broadcastStatus = broadcastStatus, let streamStatus = streamStatus, let healthStatus = healthStatus {
                 if broadcastStatus == "live" || broadcastStatus == "liveStarting" {
+                    if broadcastStatus == "live" {
+                        
+                        self.timer?.invalidate()
+                        self.timer = nil
+                        self.AskStatusStreamFrequencyInSeconds = 300
+                        self.timer = Timer(timeInterval: self.AskStatusStreamFrequencyInSeconds, target: self, selector: #selector(self.liveVideoStatusRequestTickTimer), userInfo: nil, repeats: true)
+                        RunLoop.main.add(self.timer!, forMode: RunLoop.Mode.common)
+                        
+                    }
                     completion(true)
                 } else {
                     self.delegate?.didTransitionTo(broadcastStatus: broadcastStatus, streamStatus: streamStatus, healthStatus: healthStatus)

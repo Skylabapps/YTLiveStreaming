@@ -124,10 +124,10 @@ extension YTLiveRequest {
     class func createLiveBroadcast(_ title: String,broadCasteType:String, startDateTime: Date, completion: @escaping (Error?,LiveBroadcastStreamModel?) -> Void) {
         if let accessToken =   GoogleOAuth2.sharedInstance.accessToken {
             let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-            //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\"}}"
+            //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\",\"enableAutoStart\":\"\(true)\"}}"
            
             // For Ultra Low Latency
-            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\": \"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\"}}"
+            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\":\"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\",\"enableAutoStart\":\"\(true)\"}}"
             
             let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
             let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Auth.APIkey)"
