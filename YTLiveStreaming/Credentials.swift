@@ -16,7 +16,12 @@ public class Credentials: NSObject {
             //let bundle = Bundle(for: self.classForCoder())
             let bundle = Bundle(identifier: "org.cocoapods.SkylabCore")!
             if let path = bundle.path(forResource: "LiveStreamInfo", ofType: "plist") {
-                Credentials._settingDictionary = NSDictionary(contentsOfFile: path)
+                Credentials._settingDictionary = NSMutableDictionary(contentsOfFile: path)
+            }
+            let mainBundle = Bundle.main
+            if let path = mainBundle.path(forResource: "GoogleService-Info", ofType: "plist") {
+                let glData = NSDictionary(contentsOfFile: path)!
+                Credentials.authDictionary?.setValue(glData["API_KEY"], forKey: "APIKEY")
             }
         }
         return Credentials._settingDictionary
