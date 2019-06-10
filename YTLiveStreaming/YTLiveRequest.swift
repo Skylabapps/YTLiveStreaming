@@ -50,7 +50,7 @@ extension YTLiveRequest {
                     let error = json["error"]
                     let message = error["message"].stringValue
                     if !message.isEmpty {
-                        print("Error while getting broadcast info: " + message)
+                        NSLog("YT: Error while getting broadcast info: " + message)
                         completion(nil)
                     } else {
                         //print(json)
@@ -58,10 +58,10 @@ extension YTLiveRequest {
                         let totalResults = broadcastList.pageInfo.totalResults
                         let resultsPerPage = broadcastList.pageInfo.resultsPerPage
                         
-                        print("Broadcasts total count = \(totalResults)")
+                        NSLog("YT: Broadcasts total count = \(totalResults)")
                         
                         if totalResults > resultsPerPage {
-                            print("Need to read next page!")  // TODO: In this case you should send request with pageToken=nextPageToken or pageToken=prevPageToken parameter
+                            NSLog("YT: Need to read next page!")  // TODO: In this case you should send request with pageToken=nextPageToken or pageToken=prevPageToken parameter
                         }
                         
                         completion(broadcastList)
@@ -70,7 +70,7 @@ extension YTLiveRequest {
                     completion(nil)
                 }
             case let .failure(error):
-                print("System Error: \(error.localizedDescription)")
+                NSLog("YT: System Error: \(error.localizedDescription)")
                 completion(nil)
             }
         })
@@ -90,7 +90,7 @@ extension YTLiveRequest {
                     let error = json["error"]
                     let message = error["message"].stringValue
                     if !message.isEmpty {
-                        print("Error while request broadcast list" + message)
+                        NSLog("YT: Error while request broadcast list" + message)
                         completion(nil)
                     } else {
                         //print(json)
@@ -109,7 +109,7 @@ extension YTLiveRequest {
                     completion(nil)
                 }
             case let .failure(error):
-                print("System Error: \(error.localizedDescription)")
+                NSLog("YT: System Error: \(error.localizedDescription)")
                 completion(nil)
             }
         }
@@ -151,7 +151,7 @@ extension YTLiveRequest {
                             let error = json["error"].stringValue
                             if !error.isEmpty {
                                 let message = json["message"].stringValue
-                                print("Error while Youtube broadcast was creating: \(message)")
+                                NSLog("YT: Error while Youtube broadcast was creating: \(message)")
                                 completion(response.error,nil)
                             } else {
                                 //print(json)
@@ -163,7 +163,7 @@ extension YTLiveRequest {
                         }
                         
                     case .failure(let error):
-                        print("System Error: " + error.localizedDescription)
+                        NSLog("YT: System Error: " + error.localizedDescription)
                         completion(response.error, nil)
                     }
             }
@@ -214,7 +214,7 @@ extension YTLiveRequest {
                                 let error = json["error"].stringValue
                                 if !error.isEmpty {
                                     let message = json["message"].stringValue
-                                    print("Error while Youtube broadcast was creating" + message)
+                                    NSLog("YT: Error while Youtube broadcast was creating" + message)
                                     completion(false)
                                 } else {
                                     completion(true)
@@ -223,7 +223,7 @@ extension YTLiveRequest {
                                 completion(false)
                             }
                         case .failure(let error):
-                            print("System Error: " + error.localizedDescription)
+                            NSLog("YT: System Error: " + error.localizedDescription)
                             completion(false)
                         }
                 }
@@ -254,8 +254,8 @@ extension YTLiveRequest {
                     let error = json["error"]
                     let message = error["message"].stringValue
                     if !message.isEmpty {
-                        print("FAILED TRANSITION TO THE \(broadcastStatus) STATUS [\(message)]!")
-                        //print("Error while Youtube broadcast transition", message: message)
+                        NSLog("YT: FAILED TRANSITION TO THE \(broadcastStatus) STATUS [\(message)]!")
+                        //NSLog("YT: Error while Youtube broadcast transition", message: message)
                         completion(nil)
                     } else {
                         //print(json)
@@ -266,7 +266,7 @@ extension YTLiveRequest {
                     completion(nil)
                 }
             case let .failure(error):
-                print("System Error: " + error.localizedDescription)
+                NSLog("YT: System Error: " + error.localizedDescription)
                 completion(nil)
             }
         }
@@ -286,17 +286,17 @@ extension YTLiveRequest {
                     let json = try JSON(data: response.data)
                     let error = LiveBroadcastErrorModel.decode(json["error"])
                     if let code = error.code, code > 0 {
-                        print("Failed to delete broadcast: " + error.message!)
+                        NSLog("YT: Failed to delete broadcast: " + error.message!)
                         completion(false)
                     } else {
-                        //print("Broadcast deleted: \(json)")
+                        //NSLog("YT: Broadcast deleted: \(json)")
                         completion(true)
                     }
                 } catch {
                     completion(false)
                 }
             case let .failure(error):
-                print("System Error" + error.localizedDescription)
+                NSLog("YT: System Error" + error.localizedDescription)
                 completion(false)
             }
         }
@@ -320,7 +320,7 @@ extension YTLiveRequest {
                     let error = json["error"]
                     let message = error["message"].stringValue
                     if !message.isEmpty {
-                        print("Error while Youtube broadcast binding with live stream: \(message)")
+                        NSLog("YT: Error while Youtube broadcast binding with live stream: \(message)")
                         completion(nil)
                     } else {
                         //print(json)
@@ -331,7 +331,7 @@ extension YTLiveRequest {
                     completion(nil)
                 }
             case let .failure(error):
-                print("System Error" + error.localizedDescription)
+                NSLog("YT: System Error" + error.localizedDescription)
                 completion(nil)
             }
         }
@@ -362,7 +362,7 @@ extension YTLiveRequest {
                     let error = json["error"]
                     let message = error["message"].stringValue
                     if !message.isEmpty {
-                        print("Error while Youtube broadcast creating: " + message)
+                        NSLog("YT: Error while Youtube broadcast creating: " + message)
                         completion(nil)
                     } else {
                         //print(json)
@@ -381,7 +381,7 @@ extension YTLiveRequest {
                     completion(nil)
                 }
             case let .failure(error):
-                print("System Error" + error.localizedDescription)
+                NSLog("YT: System Error" + error.localizedDescription)
                 completion(nil)
             }
         }
@@ -437,7 +437,7 @@ extension YTLiveRequest {
                                 let error = json["error"]
                                 if !error.isEmpty {
                                     let message = json["message"].stringValue
-                                    print("Error while Youtube broadcast was creating: " + message)
+                                    NSLog("YT: Error while Youtube broadcast was creating: " + message)
                                     completion(nil)
                                 } else {
                                     let liveStream = LiveStreamModel.decode(json)
@@ -447,7 +447,7 @@ extension YTLiveRequest {
                                 completion(nil)
                             }
                         case .failure(let error):
-                            print("System Error: " +  error.localizedDescription)
+                            NSLog("YT: System Error: " +  error.localizedDescription)
                             completion(nil)
                         }
                 }
@@ -476,14 +476,14 @@ extension YTLiveRequest {
                         print(error + ";" + message)
                         completion(false)
                     } else {
-                        print("video stream deleted: \(json)")
+                        NSLog("YT: video stream deleted: \(json)")
                         completion(true)
                     }
                 } catch {
                     completion(false)
                 }
             case let .failure(error):
-                print("System Error: \(error.localizedDescription)")
+                NSLog("YT: System Error: \(error.localizedDescription)")
                 completion(false)
             }
         }
@@ -519,7 +519,7 @@ extension YTLiveRequest {
                                 let error = json["error"].stringValue
                                 if !error.isEmpty {
                                     let message = json["message"].stringValue
-                                    print("Error while Youtube broadcast was creating" + message)
+                                    NSLog("YT: Error while Youtube broadcast was creating" + message)
                                     completion(false)
                                 } else {
                                     completion(true)
@@ -528,7 +528,7 @@ extension YTLiveRequest {
                                 completion(false)
                             }
                         case .failure(let error):
-                            print("System Error: \(error.localizedDescription)")
+                            NSLog("YT: System Error: \(error.localizedDescription)")
                             completion(false)
                         }
                 }

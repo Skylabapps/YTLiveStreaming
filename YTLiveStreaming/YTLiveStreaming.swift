@@ -119,12 +119,12 @@ extension YTLiveStreaming {
                             }
                         })
                     } else {
-                        print("Something went wrong with creating a live stream")
+                        NSLog("YT: Something went wrong with creating a live stream")
                         completion(error,nil)
                     }
                 }
             } else {
-                print("Something went wrong with creating a broadcast")
+                NSLog("YT: Something went wrong with creating a broadcast")
                 completion(error,nil)
             }
         })
@@ -152,7 +152,7 @@ extension YTLiveStreaming {
                             let monitorStream = liveBroadcast.contentDetails.monitorStream.embedHtml
                             let streamTitle = liveStream.snipped.title
                             
-                            print("\n-BroadcastId=\(liveBroadcast.id);\n-Live stream id=\(sreamId); \n-title=\(streamTitle); \n-start=\(scheduledStartTime); \n-STREAM_URL=\(streamUrl)/STREAM_NAME=\(streamName): created!\n-MONITOR_STREAM=\(monitorStream)\n")
+                            NSLog("YT: \n-BroadcastId=\(liveBroadcast.id);\n-Live stream id=\(sreamId); \n-title=\(streamTitle); \n-start=\(scheduledStartTime); \n-STREAM_URL=\(streamUrl)/STREAM_NAME=\(streamName): created!\n-MONITOR_STREAM=\(monitorStream)\n")
                             
                             LiveLauncher.sharedInstance.youTubeWorker = self
                             LiveLauncher.sharedInstance.delegate = delegate
@@ -161,12 +161,12 @@ extension YTLiveStreaming {
                         }
                     })
                 } else {
-                    print("Something went wrong. Please xheck broadcast.youtubeId. It has to contain broadcast Id and live stream Id")
+                    NSLog("YT: Something went wrong. Please xheck broadcast.youtubeId. It has to contain broadcast Id and live stream Id")
                     completion(nil, nil, nil)
                 }
             }
         } else {
-            print("Something went wrong. Please xheck broadcast.youtubeId. It has to contain broadcast Id and live stream Id")
+            NSLog("YT: Something went wrong. Please xheck broadcast.youtubeId. It has to contain broadcast Id and live stream Id")
             completion(nil, nil, nil)
         }
     }
@@ -195,7 +195,7 @@ extension YTLiveStreaming {
         YTLiveRequest.transitionLiveBroadcast(broadcast.id, broadcastStatus: toStatus, completion: { liveBroadcast in
             if let _ = liveBroadcast {
                 completion(true)
-                print("Our broadcast in the \(toStatus) status!")
+                NSLog("YT: Our broadcast in the \(toStatus) status!")
             } else {
                 completion(false)
             }
@@ -249,14 +249,14 @@ extension YTLiveStreaming {
     public func transitionBroadcastToLiveState(liveBroadcast: LiveBroadcastStreamModel, liveState: @escaping (Bool) -> Void) {
         self.transitionBroadcast(liveBroadcast, toStatus: "live", completion: { success in
             if success {
-                print("Transition to the LIVE status was made successfully")
+                NSLog("YT: Transition to the LIVE status was made successfully")
                 liveState(true)
             } else {
-                print("Failed transition to the LIVE status!")
+                NSLog("YT: Failed transition to the LIVE status!")
                 liveState(false)
                 self.transitionBroadcast(liveBroadcast, toStatus: "testing", completion: { success in
                     if success {
-                        print("We in the testing status!")
+                        NSLog("YT: We in the testing status!")
                     }
                 })
             }
@@ -289,7 +289,7 @@ extension YTLiveStreaming {
             let broadcastId = item.id
             self.deleteBroadcast(id: broadcastId, completion: { success in
                 if success {
-                    print("Broadcast \"\(broadcastId)\" deleted!")
+                    NSLog("YT: Broadcast \"\(broadcastId)\" deleted!")
                 }
                 self.deleteBroadcast(items, index: index + 1, completion: completion)
             })

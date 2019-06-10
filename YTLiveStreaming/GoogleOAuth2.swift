@@ -34,7 +34,7 @@ public class GoogleOAuth2: NSObject {
             self.accessToken = try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).readPassword();
         }
         catch {
-            print("Error fetching password items -)")
+            NSLog("YT: Error fetching password items -)")
         }
     }
     
@@ -48,7 +48,7 @@ public class GoogleOAuth2: NSObject {
                 try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).savePassword(accessToken ?? " ")
             }
             catch {
-                print("Error fetching password items )")
+                NSLog("YT: Error fetching password items )")
             }
         }
     }
@@ -58,7 +58,7 @@ public class GoogleOAuth2: NSObject {
             try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).deleteItem()
         }
         catch {
-            print("Error fetching password items)")
+            NSLog("YT: Error fetching password items)")
         }
     }
     
