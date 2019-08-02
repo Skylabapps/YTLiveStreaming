@@ -122,91 +122,29 @@ extension YTLiveRequest {
     // https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/insert
     // Creates a broadcast.
     class func createLiveBroadcast(_ title: String,broadCasteType:String, startDateTime: Date, completion: @escaping (Error?,LiveBroadcastStreamModel?) -> Void) {
-        if let accessToken =   GoogleOAuth2.sharedInstance.accessToken {
-            let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-            //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\",\"enableAutoStart\":\"\(true)\"}}"
-           
-            // For Ultra Low Latency
-            let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\":\"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\",\"enableAutoStart\":\"\(true)\"}}"
-            
-            let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-            let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Auth.APIkey)"
-            
-            // public
-            Alamofire.request(url,
-                              method: .post,
-                              parameters: [:],
-                              encoding: encoder,
-                              headers: headers)
-                .validate()
-                .responseData { response in
-                    switch response.result {
-                    case .success:
-                        guard let data = response.data else {
-                            completion(response.error,nil)
-                            return
-                        }
-                        do {
-                            let json = try JSON(data: data)
-                            let error = json["error"].stringValue
-                            if !error.isEmpty {
-                                let message = json["message"].stringValue
-                                NSLog("YT: Error while Youtube broadcast was creating: \(message)")
-                                completion(response.error,nil)
-                            } else {
-                                //print(json)
-                                let liveBroadcast = LiveBroadcastStreamModel.decode(json)
-                                completion(response.error,liveBroadcast)
-                            }
-                        } catch {
-                            completion(response.error,nil)
-                        }
-                        
-                    case .failure(let error):
-                        NSLog("YT: System Error: " + error.localizedDescription)
-                        completion(response.error, nil)
-                    }
-            }
-        } else {
-            let error = NSError(domain: "Gogole token fail", code: 440, userInfo: nil)
-            completion(error,nil)
-        }
-    }
-    
-    
-    // Updates a broadcast. For example, you could modify the broadcast settings defined in the liveBroadcast resource's contentDetails object.
-    // https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/update
-    // PUT https://www.googleapis.com/youtube/v3/liveBroadcasts
-    class func updateLiveBroadcast(_ broadcast: LiveBroadcastStreamModel, completion: @escaping (Bool) -> Void) {
-        if let accessToken =   GoogleOAuth2.sharedInstance.accessToken {
-            
-            let broadcastId = broadcast.id
-            let title = broadcast.snipped.title
-            let startTime = broadcast.snipped.scheduledStartTime.toJSONformat()
-            let privacyStatus = broadcast.status.privacyStatus
-            let enableMonitorStream = broadcast.contentDetails.monitorStream.enableMonitorStream
-            let broadcastStreamDelayMs = broadcast.contentDetails.monitorStream.broadcastStreamDelayMs
-            let enableDvr = broadcast.contentDetails.enableDvr
-            let enableContentEncryption = broadcast.contentDetails.enableContentEncryption
-            //         let enableEmbed = broadcast.contentDetails.enableEmbed
-            let enableEmbed = true
-            let recordFromStart = broadcast.contentDetails.recordFromStart
-            let startWithSlate = broadcast.contentDetails.startWithSlate
-            
-            if accessToken.isEmpty == false {
+        GoogleOAuth2.sharedInstance.requestToken() { token in
+            if let accessToken = token {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(accessToken)"])
-                let jsonBody = "{\"id\":\"\(broadcastId)\",\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startTime)\"},\"status\":{\"privacyStatus\":\"\(privacyStatus)\"},\"contentDetails\":{\"monitorStream\":{\"enableMonitorStream\":\(enableMonitorStream),\"broadcastStreamDelayMs\":\"\(broadcastStreamDelayMs)\"},\"enableDvr\":\(enableDvr),\"enableContentEncryption\":\(enableContentEncryption),\"enableEmbed\":\(enableEmbed),\"recordFromStart\":\(recordFromStart),\"startWithSlate\":\(startWithSlate)}}"
+                //let jsonBody = "{\"snippet\": {\"title\": \"\(title)\",\"scheduledStartTime\": \"\(startDateTime.toJSONformat())\"},\"status\": {\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\": {\"enableLowLatency\":\"\(true)\",\"enableAutoStart\":\"\(true)\"}}"
+                
+                // For Ultra Low Latency
+                let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\":\"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\",\"enableAutoStart\":\"\(true)\"}}"
+                
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                Alamofire.request("\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Auth.APIkey)",
-                    method: .put,
-                    parameters: [:],
-                    encoding: encoder,
-                    headers: headers)
+                let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Auth.APIkey)"
+                
+                // public
+                Alamofire.request(url,
+                                  method: .post,
+                                  parameters: [:],
+                                  encoding: encoder,
+                                  headers: headers)
+                    .validate()
                     .responseData { response in
                         switch response.result {
                         case .success:
                             guard let data = response.data else {
-                                completion(false)
+                                completion(response.error,nil)
                                 return
                             }
                             do {
@@ -214,21 +152,25 @@ extension YTLiveRequest {
                                 let error = json["error"].stringValue
                                 if !error.isEmpty {
                                     let message = json["message"].stringValue
-                                    NSLog("YT: Error while Youtube broadcast was creating" + message)
-                                    completion(false)
+                                    NSLog("YT: Error while Youtube broadcast was creating: \(message)")
+                                    completion(response.error,nil)
                                 } else {
-                                    completion(true)
+                                    //print(json)
+                                    let liveBroadcast = LiveBroadcastStreamModel.decode(json)
+                                    completion(response.error,liveBroadcast)
                                 }
                             } catch {
-                                completion(false)
+                                completion(response.error,nil)
                             }
+                            
                         case .failure(let error):
                             NSLog("YT: System Error: " + error.localizedDescription)
-                            completion(false)
+                            completion(response.error, nil)
                         }
                 }
             } else {
-                completion(false)
+                let error = NSError(domain: "Gogole token fail", code: 440, userInfo: nil)
+                completion(error,nil)
             }
         }
     }
@@ -484,55 +426,6 @@ extension YTLiveRequest {
                 }
             case let .failure(error):
                 NSLog("YT: System Error: \(error.localizedDescription)")
-                completion(false)
-            }
-        }
-    }
-    
-    // Updates a video stream. If the properties that you want to change cannot be updated, then you need to create a new stream with the proper settings.
-    // Request:
-    // PUT https://www.googleapis.com/youtube/v3/liveStreams
-    // format = 1080p 1440p 240p 360p 480p 720p
-    // ingestionType = dash rtmp
-    
-    class func updateLiveStream(_ liveStreamId: String, title: String, format: String, ingestionType: String, completion: @escaping (Bool) -> Void) {
-        GoogleOAuth2.sharedInstance.requestToken() { token in
-            if let token = token {
-                let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
-                let jsonBody = "{\"id\":\"\(liveStreamId)\",\"snippet\":{\"title\":\"\(title)\"},\"cdn\":{\"format\":\"\(format)\",\"ingestionType\":\"\(ingestionType)\"}}}"
-                let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                Alamofire.request("\(LiveAPI.BaseURL)/liveStreams",
-                    method: .put,
-                    parameters: ["part": "id,snippet,cdn,status", "key": Auth.APIkey],
-                    encoding: encoder,
-                    headers: headers)
-                    .validate()
-                    .responseData { response in
-                        switch response.result {
-                        case .success:
-                            guard let data = response.data else {
-                                completion(false)
-                                return
-                            }
-                            do {
-                                let json = try JSON(data: data)
-                                let error = json["error"].stringValue
-                                if !error.isEmpty {
-                                    let message = json["message"].stringValue
-                                    NSLog("YT: Error while Youtube broadcast was creating" + message)
-                                    completion(false)
-                                } else {
-                                    completion(true)
-                                }
-                            } catch {
-                                completion(false)
-                            }
-                        case .failure(let error):
-                            NSLog("YT: System Error: \(error.localizedDescription)")
-                            completion(false)
-                        }
-                }
-            } else {
                 completion(false)
             }
         }

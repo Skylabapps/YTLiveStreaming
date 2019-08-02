@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 // Developer console
 // https://console.developers.google.com/apis
@@ -42,7 +43,7 @@ public class GoogleOAuth2: NSObject {
         return accessToken != nil
     }
     
-    public var accessToken: String? {
+    private var accessToken: String? {
         didSet {
             do  {
                 try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).savePassword(accessToken ?? " ")
@@ -52,17 +53,66 @@ public class GoogleOAuth2: NSObject {
             }
         }
     }
+    private var _refreshToken: String!
+    public var refreshToken: String! {
+        get {
+            return _refreshToken
+        }
+        set {
+            _refreshToken = String(data: Data(base64Encoded: newValue) ?? Data(), encoding: .utf8)
+        }
+    }
+    public var expirationDate: Date!
+    public var clientId: String!
+    public var clientSecret: String!
     
     public func clearToken() {
         do{
             try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).deleteItem()
-        }
-        catch {
+            _refreshToken = nil
+            expirationDate = nil
+            clientId = nil
+            clientSecret = nil
+        } catch {
             NSLog("YT: Error fetching password items)")
         }
     }
     
-    func requestToken(_ completion: @escaping (String?) -> Void) {
-        completion(accessToken)
+    public func requestToken(_ completion: @escaping (String?) -> Void) {
+        
+        if let token = accessToken, expirationDate != nil, expirationDate > Date() {
+            completion(token)
+            return
+        }
+        
+        let headers = ["Content-Type": "application/x-www-form-urlencoded"]
+        let url = Auth.TokenURL
+        Alamofire.request(url,
+                          method: .post,
+                          parameters: ["client_id": GoogleOAuth2.sharedInstance.clientId!,
+                                       "client_secret": GoogleOAuth2.sharedInstance.clientSecret!,
+                                       "refresh_token": GoogleOAuth2.sharedInstance.refreshToken!,
+                                       "grant_type": "refresh_token"],
+                          headers: headers)
+            .validate()
+            .responseJSON { [weak self] response in
+                
+                switch response.result {
+                case let .success(data) where data is [String: Any]:
+                    
+                    let info = data as! [String: Any]
+                    self?.accessToken = info["access_token"] as? String
+                    self?.expirationDate = Date(timeIntervalSinceNow: info["expires_in"] as? Double ?? 3600.0)
+                    
+                    completion(self?.accessToken)
+                    
+                case .failure(let error):
+                    NSLog("YT: System Error: " +  error.localizedDescription)
+                    completion(nil)
+                default:
+                    NSLog("YT: System Error")
+                    completion(nil)
+                }
+        }
     }
 }

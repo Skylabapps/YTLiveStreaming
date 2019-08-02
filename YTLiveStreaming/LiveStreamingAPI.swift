@@ -20,7 +20,7 @@ private func JSONResponseDataFormatter(_ data: Data) -> Data {
     }
 }
 
-let requestClosure = { (endpoint: Moya.Endpoint<LiveStreamingAPI>, done: @escaping MoyaProvider<LiveStreamingAPI>.RequestResultClosure) in
+let requestClosure = { (endpoint: Moya.Endpoint, done: @escaping MoyaProvider<LiveStreamingAPI>.RequestResultClosure) in
     GoogleOAuth2.sharedInstance.requestToken() { token in
         if let token = token {
             do {
