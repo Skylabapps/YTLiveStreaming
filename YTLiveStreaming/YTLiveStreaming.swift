@@ -258,10 +258,6 @@ extension YTLiveStreaming {
             }
         })
     }
-    
-    public func isYouTubeAvailable() -> Bool {
-        return GoogleOAuth2.sharedInstance.isAccessTokenPresented
-    }
 }
 
 // MARK: Private methods

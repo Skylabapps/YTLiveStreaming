@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.summary      = "YTLiveStreaming is an YouTube Live Streaming Framework"
   s.requires_arc = true
 
-  s.version      = "0.2.13"
+  s.version      = "0.2.14"
 
   # Initialize
   # Check podspec
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
   s.author       = { "Sergey Krotkih" => "sergey.krotkih@gmail.com" }
   s.homepage     = "https://github.com/SKrotkih/YTLiveStreaming.git"
 
-  s.source       = { :git => "https://github.com/SKrotkih/YTLiveStreaming.git", :tag => s.version.to_s }
+  s.source       = { :git => "git@github.com:Skylabapps/YTLiveStreaming.git", :tag => s.version.to_s }
 
   s.frameworks   = "UIKit"
   s.dependency 'Moya', '13.0.0'

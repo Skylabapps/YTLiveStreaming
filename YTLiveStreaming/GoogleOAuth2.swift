@@ -17,10 +17,7 @@ import Alamofire
 // For more info see https://developers.google.com/identity/protocols/OAuth2WebServer#handlingtheresponse
 // And https://developers.google.com/+/web/api/rest/oauth
 
-public class GoogleOAuth2: NSObject {
-    
-    //let Keychain:  KeychainPasswordItem
-    let kOAuth2AccessTokenService: String = "OAuth2AccessToken"
+public class GoogleOAuth2 {
     
     public class var sharedInstance: GoogleOAuth2 {
         struct Singleton {
@@ -29,58 +26,61 @@ public class GoogleOAuth2: NSObject {
         return Singleton.instance
     }
     
-    override init() {
-        super.init()
-        do  {
-            self.accessToken = try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).readPassword();
+    // ACCESS TOKEN
+    private var accessToken: String?
+    
+    // REFRESH TOKEN
+    private var refreshToken: String?
+    public func setRefreshToken(_ token: String) {
+        if let tokenData = Data(base64Encoded: token) {
+            refreshToken = String(data: tokenData, encoding: .utf8)
         }
-        catch {
-            NSLog("YT: Error fetching password items -)")
-        }
+    }
+    // EXPIRATION
+    private var expirationDate: Date?
+    
+    // CLIENT ID
+    private var clientId: String?
+    
+    // CLIENT SECRET
+    private var clientSecret: String?
+    
+    public func refreshConfig(refreshToken: String, clientId: String, clientSecret: String) {
+        
+        clearTokens()
+        
+        setRefreshToken(refreshToken)
+        self.clientId = clientId
+        self.clientSecret = clientSecret
     }
     
-    var isAccessTokenPresented: Bool {
-        return accessToken != nil
+    public var debugInfo: [String: String] {
+        return ["refreshToken": "\(String(describing: refreshToken))",
+            "accessToken": "\(String(describing: accessToken))",
+            "expirationDate": "\(String(describing: expirationDate))",
+            "clientId": "\(String(describing: clientId))",
+            "clientSecret": "\(String(describing: clientSecret))"]
     }
+}
+
+extension GoogleOAuth2 {
     
-    private var accessToken: String? {
-        didSet {
-            do  {
-                try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).savePassword(accessToken ?? " ")
-            }
-            catch {
-                NSLog("YT: Error fetching password items )")
-            }
-        }
-    }
-    private var _refreshToken: String!
-    public var refreshToken: String! {
-        get {
-            return _refreshToken
-        }
-        set {
-            _refreshToken = String(data: Data(base64Encoded: newValue) ?? Data(), encoding: .utf8)
-        }
-    }
-    public var expirationDate: Date!
-    public var clientId: String!
-    public var clientSecret: String!
-    
-    public func clearToken() {
-        do{
-            try KeychainPasswordItem(service: LiveAPI.BaseURL, account: kOAuth2AccessTokenService).deleteItem()
-            _refreshToken = nil
-            expirationDate = nil
-            clientId = nil
-            clientSecret = nil
-        } catch {
-            NSLog("YT: Error fetching password items)")
-        }
+    private func clearTokens() {
+        refreshToken = nil
+        accessToken = nil
+        expirationDate = nil
+        clientId = nil
+        clientSecret = nil
     }
     
     public func requestToken(_ completion: @escaping (String?) -> Void) {
         
-        if let token = accessToken, expirationDate != nil, expirationDate > Date() {
+        guard let clientId = clientId, let clientSecret = clientSecret, let refreshToken = refreshToken else {
+            completion(nil)
+            return
+        }
+        
+        if let token = accessToken, let expDate = expirationDate, expDate > Date() {
             completion(token)
             return
         }
@@ -89,9 +89,9 @@ public class GoogleOAuth2: NSObject {
         let url = Auth.TokenURL
         Alamofire.request(url,
                           method: .post,
-                          parameters: ["client_id": GoogleOAuth2.sharedInstance.clientId!,
-                                       "client_secret": GoogleOAuth2.sharedInstance.clientSecret!,
-                                       "refresh_token": GoogleOAuth2.sharedInstance.refreshToken!,
+                          parameters: ["client_id": clientId,
+                                       "client_secret": clientSecret,
+                                       "refresh_token": refreshToken,
                                        "grant_type": "refresh_token"],
                           headers: headers)
             .validate()
