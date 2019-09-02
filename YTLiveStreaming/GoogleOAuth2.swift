@@ -87,15 +87,23 @@ extension GoogleOAuth2 {
         
         let headers = ["Content-Type": "application/x-www-form-urlencoded"]
         let url = Auth.TokenURL
-        Alamofire.request(url,
-                          method: .post,
-                          parameters: ["client_id": clientId,
-                                       "client_secret": clientSecret,
-                                       "refresh_token": refreshToken,
-                                       "grant_type": "refresh_token"],
-                          headers: headers)
+        
+        let networkRequest = Alamofire.request(url,
+                                               method: .post,
+                                               parameters: ["client_id": clientId,
+                                                            "client_secret": clientSecret,
+                                                            "refresh_token": refreshToken,
+                                                            "grant_type": "refresh_token"],
+                                               headers: headers)
+        networkRequest
             .validate()
             .responseJSON { [weak self] response in
+                
+                NSLog("YT AUTH REQUEST: \(networkRequest.debugDescription)")
+                NSLog("YT AUTH RESPONSE CODE: \(response.response?.statusCode ?? 0)")
+                let data = response.data ?? Data()
+                let responseDecoded = String((String(data: data, encoding: String.Encoding.utf8) ?? "").prefix(200))
+                NSLog("YT AUTH RESPONSE DECODED: %@", responseDecoded)
                 
                 switch response.result {
                 case let .success(data) where data is [String: Any]:
