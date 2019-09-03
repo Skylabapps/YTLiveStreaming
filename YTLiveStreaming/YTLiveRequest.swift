@@ -39,8 +39,7 @@ extension YTLiveRequest {
         let parameters: [String: AnyObject] = [
             "part": "id,snippet,contentDetails,status" as AnyObject,
             "broadcastStatus": status.rawValue as AnyObject,
-            "maxResults": LiveRequest.MaxResultObjects as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "maxResults": LiveRequest.MaxResultObjects as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.listBroadcasts(parameters), completion: { result in
             switch result {
@@ -79,8 +78,7 @@ extension YTLiveRequest {
     class func getLiveBroadcast(broadcastId: String, completion: @escaping (LiveBroadcastStreamModel?) -> Void) {
         let parameters: [String: AnyObject] = [
             "part":"id,snippet,contentDetails,status" as AnyObject,
-            "id":broadcastId as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "id":broadcastId as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.liveBroadcast(parameters)) { result in
             switch result {
@@ -131,7 +129,7 @@ extension YTLiveRequest {
                 let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"scheduledStartTime\":\"\(startDateTime.toJSONformat())\"},\"status\":{\"privacyStatus\":\"\(broadCasteType)\"},\"contentDetails\":{\"enableDvr\":false,\"enableLowLatency\":false,\"latencyPreference\":\"ultraLow\",\"closedCaptionsType\":\"closedCaptionsDisabled\",\"stereoLayout\":\"mono\",\"projection\":\"rectangular\",\"enableAutoStart\":\"\(true)\"}}"
                 
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status&key=\(Auth.APIkey)"
+                let url = "\(LiveAPI.BaseURL)/liveBroadcasts?part=id,snippet,contentDetails,status"
                 
                 // public
                 Alamofire.request(url,
@@ -185,8 +183,7 @@ extension YTLiveRequest {
         let parameters: [String: AnyObject] = [
             "id":boadcastId as AnyObject,
             "broadcastStatus":broadcastStatus as AnyObject,
-            "part":"id,snippet,contentDetails,status" as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "part":"id,snippet,contentDetails,status" as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.transitionLiveBroadcast(parameters)) { result in
             switch result {
@@ -218,8 +215,7 @@ extension YTLiveRequest {
     // DELETE https://www.googleapis.com/youtube/v3/liveBroadcasts
     class func deleteLiveBroadcast(broadcastId: String, completion: @escaping (Bool) -> Void) {
         let parameters: [String: AnyObject] = [
-            "id":broadcastId as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "id":broadcastId as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.deleteLiveBroadcast(parameters)) { result in
             switch result {
@@ -251,8 +247,7 @@ extension YTLiveRequest {
         let parameters: [String: AnyObject] = [
             "id":broadcastId as AnyObject,
             "streamId":streamId as AnyObject,
-            "part":"id,snippet,contentDetails,status" as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "part":"id,snippet,contentDetails,status" as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.bindLiveBroadcast(parameters)) { result in
             switch result {
@@ -293,8 +288,7 @@ extension YTLiveRequest {
     class func getLiveStream(_ liveStreamId: String, completion: @escaping (LiveStreamModel?) -> Void) {
         let parameters: [String: AnyObject] = [
             "part":"id,snippet,cdn,status" as AnyObject,
-            "id":liveStreamId as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "id":liveStreamId as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.liveStream(parameters)) { result in
             switch result {
@@ -360,7 +354,7 @@ extension YTLiveRequest {
                 let headers = merge(one: ["Content-Type": "application/json"], ["Authorization":"Bearer \(token)"])
                 let jsonBody = "{\"snippet\":{\"title\":\"\(title)\",\"description\":\"\(description)\"},\"cdn\":{\"resolution\":\"\(resolution)\",\"frameRate\":\"\(frameRate)\",\"ingestionType\":\"\(ingestionType)\",\"ingestionInfo\":{\"streamName\":\"\(streamName)\"}}}"
                 let encoder = JSONBodyStringEncoding(jsonBody: jsonBody)
-                let url = "\(LiveAPI.BaseURL)/liveStreams?part=id,snippet,cdn,status&key=\(Auth.APIkey)"
+                let url = "\(LiveAPI.BaseURL)/liveStreams?part=id,snippet,cdn,status"
                 Alamofire.request(url,
                                   method: .post,
                                   parameters: [:],
@@ -404,8 +398,7 @@ extension YTLiveRequest {
     // DELETE https://www.googleapis.com/youtube/v3/liveStreams
     class func deleteLiveStream(_ liveStreamId: String, completion: @escaping (Bool) -> Void) {
         let parameters: [String: AnyObject] = [
-            "id":liveStreamId as AnyObject,
-            "key": Auth.APIkey as AnyObject
+            "id":liveStreamId as AnyObject
         ]
         YouTubeLiveVideoProvider.request(LiveStreamingAPI.deleteLiveStream(parameters)) { result in
             switch result {
