@@ -38,13 +38,15 @@ extension Date {
     
 }
 
+// "2020-05-27T10:43:15Z"
 func convertJSONtoDate(json: String) -> Date {
+    
     let dateFormatterDate        = DateFormatter()
-    dateFormatterDate.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSz"
+    dateFormatterDate.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
     let timeZone: TimeZone       = TimeZone(secondsFromGMT: 0)!
     dateFormatterDate.timeZone   = timeZone
     let calendar                 = Calendar(identifier: .gregorian)
     dateFormatterDate.calendar   = calendar
     let date                     = dateFormatterDate.date(from: json)
-    return date!
+    return date ?? Date()
 }
